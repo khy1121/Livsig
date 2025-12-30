@@ -72,7 +72,7 @@ export async function deleteAdminUser(id) {
 }
 
 // 활동 로그 조회
-export async function getActivityLogs(page = 1, limit = 50, filters = {}) {
+export async function fetchActivityLogs(page = 1, limit = 50, filters = {}) {
     const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),

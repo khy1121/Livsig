@@ -9,6 +9,8 @@ import {
 import { logout, fetchAdminStats, fetchOrders, fetchProducts, deleteProduct } from '../utils/auth';
 import ProductModal from '../components/ProductModal';
 import OrderDetailModal from '../components/OrderDetailModal';
+import ActivityLogs from '../components/ActivityLogs';
+import UserManagement from './UserManagement'; // Reuse existing page component as sub-component
 import './AdminDashboard.css';
 
 const COLORS = ['#A8B5A0', '#D4B5B0', '#8FA087', '#C9A896', '#7F9B8E'];
@@ -228,6 +230,12 @@ export default function AdminDashboard() {
                             onClick={() => setActiveTab('users')}
                         >
                             👥 사용자 관리
+                        </button>
+                        <button
+                            className={`nav-item ${activeTab === 'logs' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('logs')}
+                        >
+                            📋 활동 로그
                         </button>
                     </nav>
                 </aside>
@@ -496,28 +504,13 @@ export default function AdminDashboard() {
                     )}
 
                     {activeTab === 'users' && (
-                        <div className="users-view">
-                            <div className="view-header">
-                                <h2>사용자 관리</h2>
-                                <button
-                                    className="add-btn"
-                                    onClick={() => navigate('/admin/users')}
-                                >
-                                    사용자 관리 페이지로 이동 →
-                                </button>
-                            </div>
-                            <div className="info-card">
-                                <p>사용자 관리 기능은 별도 페이지에서 제공됩니다.</p>
-                                <p>관리자 계정 추가, 수정, 삭제 및 활동 로그를 확인할 수 있습니다.</p>
-                                <button
-                                    className="btn-primary"
-                                    onClick={() => navigate('/admin/users')}
-                                    style={{ marginTop: '20px' }}
-                                >
-                                    사용자 관리 페이지 열기
-                                </button>
-                            </div>
+                        <div className="users-view-integrated">
+                            <UserManagement />
                         </div>
+                    )}
+
+                    {activeTab === 'logs' && (
+                        <ActivityLogs />
                     )}
                 </main>
             </div>
