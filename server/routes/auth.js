@@ -1,11 +1,14 @@
 import express from 'express';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const router = express.Router();
 
-// 하드코딩된 관리자 자격 증명 (프로덕션에서는 환경 변수 사용)
+// 환경 변수에서 관리자 자격 증명 로드
 const ADMIN_CREDENTIALS = {
-    username: 'admin',
-    password: 'sigliv2024!'
+    username: process.env.ADMIN_USERNAME || 'admin',
+    password: process.env.ADMIN_PASSWORD || 'sigliv2024!'
 };
 
 // 로그인

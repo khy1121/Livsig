@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logout, fetchAdminStats, fetchOrders, fetchProducts } from '../utils/auth';
+import toast, { Toaster } from 'react-hot-toast';
+import * as XLSX from 'xlsx';
+import {
+    LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
+    XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
+import { logout, fetchAdminStats, fetchOrders, fetchProducts, deleteProduct } from '../utils/auth';
+import ProductModal from '../components/ProductModal';
+import OrderDetailModal from '../components/OrderDetailModal';
 import './AdminDashboard.css';
+
+const COLORS = ['#A8B5A0', '#D4B5B0', '#8FA087', '#C9A896', '#7F9B8E'];
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState(null);
@@ -9,7 +19,32 @@ export default function AdminDashboard() {
     const [products, setProducts] = useState([]);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [loading, setLoading] = useState(true);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [showProductModal, setShowProductModal] = useState(false);
+    const [showOrderModal, setShowOrderModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
     const navigate = useNavigate();
+
+    // 매출 데이터 (최근 7일)
+    const [revenueData] = useState([
+        { date: '12/24', revenue: 450000, orders: 8 },
+        { date: '12/25', revenue: 520000, orders: 12 },
+        { date: '12/26', revenue: 380000, orders: 6 },
+        { date: '12/27', revenue: 620000, orders: 15 },
+        { date: '12/28', revenue: 550000, orders: 11 },
+        { date: '12/29', revenue: 480000, orders: 9 },
+        { date: '12/30', revenue: 680000, orders: 14 }
+    ]);
+
+    // 카테고리별 판매 데이터
+    const [categoryData] = useState([
+        { name: '파자마', value: 35, sales: 1200000 },
+        { name: '슬리퍼', value: 25, sales: 850000 },
+        { name: '앞치마', value: 20, sales: 680000 },
+        { name: '침구', value: 20, sales: 720000 }
+    ]);
 
     useEffect(() => {
         loadData();
@@ -17,20 +52,34 @@ export default function AdminDashboard() {
 
     const loadData = async () => {
         setLoading(true);
-        const [statsData, ordersData, productsData] = await Promise.all([
-            fetchAdminStats(),
-            fetchOrders(),
-            fetchProducts()
-        ]);
+        const loadingToast = toast.loading('데이터를 불러오는 중...');
 
-        setStats(statsData);
-        setOrders(ordersData);
-        setProducts(productsData);
-        setLoading(false);
+        try {
+            const [statsData, ordersData, productsData] = await Promise.all([
+                fetchAdminStats(),
+                fetchOrders(),
+                fetchProducts()
+            ]);
+
+            setStats(statsData);
+            setOrders(ordersData);
+            setProducts(productsData);
+
+            toast.success('데이터를 성공적으로 불러왔습니다', {
+                id: loadingToast,
+            });
+        } catch (error) {
+            toast.error('데이터 로딩 실패', {
+                id: loadingToast,
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleLogout = async () => {
         await logout();
+        toast.success('로그아웃되었습니다');
         navigate('/login');
     };
 
@@ -40,6 +89,70 @@ export default function AdminDashboard() {
             currency: 'KRW'
         }).format(amount);
     };
+
+    const handleProductEdit = (product) => {
+        setSelectedProduct(product);
+        setShowProductModal(true);
+    };
+
+    const handleProductAdd = () => {
+        setSelectedProduct(null);
+        setShowProductModal(true);
+    };
+
+    const handleProductDelete = async (productId) => {
+        if (window.confirm('정말 이 상품을 삭제하시겠습니까?')) {
+            const result = await deleteProduct(productId);
+            if (result.success) {
+                toast.success('상품이 삭제되었습니다');
+                await loadData();
+            } else {
+                toast.error('상품 삭제에 실패했습니다');
+            }
+        }
+    };
+
+    const handleOrderClick = (order) => {
+        setSelectedOrder(order);
+        setShowOrderModal(true);
+    };
+
+    // Excel 다운로드 기능
+    const exportToExcel = () => {
+        try {
+            // 데이터 준비
+            const excelData = filteredOrders.map(order => ({
+                '주문번호': order.orderNumber,
+                '고객명': order.customer,
+                '금액': order.amount,
+                '상태': order.status,
+                '날짜': order.date
+            }));
+
+            // 워크시트 생성
+            const ws = XLSX.utils.json_to_sheet(excelData);
+
+            // 워크북 생성
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '주문내역');
+
+            // 파일 다운로드
+            const fileName = `주문내역_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+
+            toast.success('Excel 파일이 다운로드되었습니다');
+        } catch (error) {
+            toast.error('Excel 다운로드 실패');
+            console.error('Excel export error:', error);
+        }
+    };
+
+    const filteredOrders = orders.filter(order => {
+        const matchesSearch = order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesFilter = filterStatus === 'all' || order.status === filterStatus;
+        return matchesSearch && matchesFilter;
+    });
 
     if (loading) {
         return (
@@ -51,6 +164,34 @@ export default function AdminDashboard() {
 
     return (
         <div className="admin-container">
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    success: {
+                        style: {
+                            background: '#A8B5A0',
+                            color: 'white',
+                        },
+                        iconTheme: {
+                            primary: 'white',
+                            secondary: '#A8B5A0',
+                        },
+                    },
+                    error: {
+                        style: {
+                            background: '#E74C3C',
+                            color: 'white',
+                        },
+                    },
+                    loading: {
+                        style: {
+                            background: '#3498DB',
+                            color: 'white',
+                        },
+                    },
+                }}
+            />
+
             <header className="admin-header">
                 <div className="header-left">
                     <h1>SIGNAL LIVING</h1>
@@ -81,6 +222,12 @@ export default function AdminDashboard() {
                             onClick={() => setActiveTab('products')}
                         >
                             🛍️ 상품 관리
+                        </button>
+                        <button
+                            className={`nav-item ${activeTab === 'users' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('users')}
+                        >
+                            👥 사용자 관리
                         </button>
                     </nav>
                 </aside>
@@ -124,6 +271,75 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
 
+                            {/* 매출 그래프 */}
+                            <div className="chart-section">
+                                <h3>최근 7일 매출 추이</h3>
+                                <div className="chart-container">
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <LineChart data={revenueData}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="date" />
+                                            <YAxis />
+                                            <Tooltip
+                                                formatter={(value, name) => {
+                                                    if (name === 'revenue') return [formatCurrency(value), '매출'];
+                                                    return [value + '개', '주문'];
+                                                }}
+                                            />
+                                            <Legend
+                                                formatter={(value) => value === 'revenue' ? '매출' : '주문 수'}
+                                            />
+                                            <Line type="monotone" dataKey="revenue" stroke="#A8B5A0" strokeWidth={2} />
+                                            <Line type="monotone" dataKey="orders" stroke="#D4B5B0" strokeWidth={2} />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            {/* 카테고리별 판매 */}
+                            <div className="charts-row">
+                                <div className="chart-section half">
+                                    <h3>카테고리별 판매 비율</h3>
+                                    <div className="chart-container">
+                                        <ResponsiveContainer width="100%" height={300}>
+                                            <PieChart>
+                                                <Pie
+                                                    data={categoryData}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    labelLine={false}
+                                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                                    outerRadius={80}
+                                                    fill="#8884d8"
+                                                    dataKey="value"
+                                                >
+                                                    {categoryData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip formatter={(value) => `${value}%`} />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+
+                                <div className="chart-section half">
+                                    <h3>카테고리별 매출</h3>
+                                    <div className="chart-container">
+                                        <ResponsiveContainer width="100%" height={300}>
+                                            <BarChart data={categoryData}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="name" />
+                                                <YAxis />
+                                                <Tooltip formatter={(value) => formatCurrency(value)} />
+                                                <Bar dataKey="sales" fill="#A8B5A0" />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 최근 주문 */}
                             <div className="recent-section">
                                 <h3>최근 주문</h3>
                                 <div className="table-container">
@@ -139,7 +355,7 @@ export default function AdminDashboard() {
                                         </thead>
                                         <tbody>
                                             {orders.slice(0, 5).map(order => (
-                                                <tr key={order.id}>
+                                                <tr key={order.id} onClick={() => handleOrderClick(order)} style={{ cursor: 'pointer' }}>
                                                     <td>{order.orderNumber}</td>
                                                     <td>{order.customer}</td>
                                                     <td>{formatCurrency(order.amount)}</td>
@@ -160,7 +376,31 @@ export default function AdminDashboard() {
 
                     {activeTab === 'orders' && (
                         <div className="orders-view">
-                            <h2>주문 관리</h2>
+                            <div className="view-header">
+                                <h2>주문 관리</h2>
+                                <div className="filters">
+                                    <input
+                                        type="text"
+                                        placeholder="주문번호 또는 고객명 검색..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="search-input"
+                                    />
+                                    <select
+                                        value={filterStatus}
+                                        onChange={(e) => setFilterStatus(e.target.value)}
+                                        className="filter-select"
+                                    >
+                                        <option value="all">전체 상태</option>
+                                        <option value="주문확인">주문확인</option>
+                                        <option value="배송중">배송중</option>
+                                        <option value="배송완료">배송완료</option>
+                                    </select>
+                                    <button className="add-btn" onClick={exportToExcel}>
+                                        📥 Excel 다운로드
+                                    </button>
+                                </div>
+                            </div>
                             <div className="table-container">
                                 <table className="data-table">
                                     <thead>
@@ -170,10 +410,11 @@ export default function AdminDashboard() {
                                             <th>금액</th>
                                             <th>상태</th>
                                             <th>날짜</th>
+                                            <th>작업</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {orders.map(order => (
+                                        {filteredOrders.map(order => (
                                             <tr key={order.id}>
                                                 <td>{order.orderNumber}</td>
                                                 <td>{order.customer}</td>
@@ -184,6 +425,14 @@ export default function AdminDashboard() {
                                                     </span>
                                                 </td>
                                                 <td>{order.date}</td>
+                                                <td>
+                                                    <button
+                                                        className="action-btn"
+                                                        onClick={() => handleOrderClick(order)}
+                                                    >
+                                                        상세보기
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -194,7 +443,12 @@ export default function AdminDashboard() {
 
                     {activeTab === 'products' && (
                         <div className="products-view">
-                            <h2>상품 관리</h2>
+                            <div className="view-header">
+                                <h2>상품 관리</h2>
+                                <button className="add-btn" onClick={handleProductAdd}>
+                                    + 상품 추가
+                                </button>
+                            </div>
                             <div className="table-container">
                                 <table className="data-table">
                                     <thead>
@@ -204,6 +458,7 @@ export default function AdminDashboard() {
                                             <th>가격</th>
                                             <th>재고</th>
                                             <th>상태</th>
+                                            <th>작업</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -218,6 +473,20 @@ export default function AdminDashboard() {
                                                         {product.status}
                                                     </span>
                                                 </td>
+                                                <td>
+                                                    <button
+                                                        className="action-btn edit"
+                                                        onClick={() => handleProductEdit(product)}
+                                                    >
+                                                        수정
+                                                    </button>
+                                                    <button
+                                                        className="action-btn delete"
+                                                        onClick={() => handleProductDelete(product.id)}
+                                                    >
+                                                        삭제
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -225,8 +494,59 @@ export default function AdminDashboard() {
                             </div>
                         </div>
                     )}
+
+                    {activeTab === 'users' && (
+                        <div className="users-view">
+                            <div className="view-header">
+                                <h2>사용자 관리</h2>
+                                <button className="add-btn">+ 관리자 추가</button>
+                            </div>
+                            <div className="table-container">
+                                <table className="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>아이디</th>
+                                            <th>이름</th>
+                                            <th>권한</th>
+                                            <th>마지막 로그인</th>
+                                            <th>상태</th>
+                                            <th>작업</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>admin</td>
+                                            <td>관리자</td>
+                                            <td><span className="badge-super">슈퍼관리자</span></td>
+                                            <td>2024-12-30 23:00</td>
+                                            <td><span className="status-badge status-판매중">활성</span></td>
+                                            <td>
+                                                <button className="action-btn" disabled>수정</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
                 </main>
             </div>
+
+            {showProductModal && (
+                <ProductModal
+                    product={selectedProduct}
+                    onClose={() => setShowProductModal(false)}
+                    onSave={loadData}
+                />
+            )}
+
+            {showOrderModal && (
+                <OrderDetailModal
+                    order={selectedOrder}
+                    onClose={() => setShowOrderModal(false)}
+                    onUpdate={loadData}
+                />
+            )}
         </div>
     );
 }

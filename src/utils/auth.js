@@ -86,3 +86,71 @@ export const fetchProducts = async () => {
         return [];
     }
 };
+
+export const updateOrderStatus = async (orderId, status) => {
+    try {
+        const response = await fetch(`${API_URL}/admin/orders/${orderId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ status }),
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error('주문 상태 변경 오류:', error);
+        return { success: false };
+    }
+};
+
+export const addProduct = async (productData) => {
+    try {
+        const response = await fetch(`${API_URL}/admin/products`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(productData),
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error('상품 추가 오류:', error);
+        return { success: false };
+    }
+};
+
+export const updateProduct = async (productId, productData) => {
+    try {
+        const response = await fetch(`${API_URL}/admin/products/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(productData),
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error('상품 수정 오류:', error);
+        return { success: false };
+    }
+};
+
+export const deleteProduct = async (productId) => {
+    try {
+        const response = await fetch(`${API_URL}/admin/products/${productId}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error('상품 삭제 오류:', error);
+        return { success: false };
+    }
+};

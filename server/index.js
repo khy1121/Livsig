@@ -2,11 +2,22 @@ import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
+import uploadRoutes from './routes/upload.js';
+
+// 환경 변수 로드
+dotenv.config();
+
+// ES 모듈에서 __dirname 사용
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // CORS 설정 - Vite 개발 서버와 통신 허용
 app.use(cors({
@@ -23,7 +34,7 @@ app.use(cookieParser());
 
 // 세션 설정
 app.use(session({
-    secret: 'sigliv-admin-secret-key-2024',
+    secret: process.env.SESSION_SECRET || 'sigliv-admin-secret-key-2024',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -39,9 +50,13 @@ app.use((req, res, next) => {
     next();
 });
 
+// 정적 파일 제공 (업로드된 이미지)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // 라우트 등록
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // 기본 라우트
 app.get('/', (req, res) => {

@@ -50,6 +50,19 @@ router.get('/orders', (req, res) => {
     res.json(orders);
 });
 
+// 주문 상태 변경
+router.patch('/orders/:id/status', (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // 실제로는 데이터베이스에서 업데이트
+    res.json({
+        success: true,
+        message: '주문 상태가 변경되었습니다',
+        order: { id: parseInt(id), status }
+    });
+});
+
 // 상품 목록
 router.get('/products', (req, res) => {
     // 목업 상품 데이터
