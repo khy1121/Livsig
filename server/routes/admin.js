@@ -1,5 +1,6 @@
 import express from 'express';
 import { requireAuth } from '../middleware/auth.js';
+import { validateProduct, validateAdminCreate, validateAdminUpdate } from '../middleware/validators.js';
 import Product from '../models/Product.model.js';
 import Order from '../models/Order.model.js';
 import Admin from '../models/Admin.model.js';
@@ -110,7 +111,7 @@ router.get('/products', async (req, res) => {
 });
 
 // 상품 추가
-router.post('/products', async (req, res) => {
+router.post('/products', validateProduct, async (req, res) => {
     try {
         const newProduct = await Product.create(req.body);
 
@@ -136,7 +137,7 @@ router.post('/products', async (req, res) => {
 });
 
 // 상품 수정
-router.put('/products/:id', async (req, res) => {
+router.put('/products/:id', validateProduct, async (req, res) => {
     try {
         const { id } = req.params;
         const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
@@ -212,7 +213,7 @@ router.get('/users', async (req, res) => {
 });
 
 // 관리자 추가 (super_admin만 가능)
-router.post('/users', async (req, res) => {
+router.post('/users', validateAdminCreate, async (req, res) => {
     try {
         if (req.session.role !== 'super_admin') {
             return res.status(403).json({ success: false, message: '권한이 없습니다' });
@@ -256,7 +257,7 @@ router.post('/users', async (req, res) => {
 });
 
 // 관리자 수정 (super_admin만 가능)
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/:id', validateAdminUpdate, async (req, res) => {
     try {
         if (req.session.role !== 'super_admin') {
             return res.status(403).json({ success: false, message: '권한이 없습니다' });

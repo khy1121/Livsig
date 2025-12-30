@@ -1,12 +1,13 @@
 import express from 'express';
 import { requireAuth } from '../middleware/auth.js';
+import { validateLogin } from '../middleware/validators.js';
 import Admin from '../models/Admin.model.js';
 import ActivityLog from '../models/ActivityLog.model.js';
 
 const router = express.Router();
 
 // 로그인
-router.post('/login', async (req, res) => {
+router.post('/login', validateLogin, async (req, res) => {
     try {
         const { username, password } = req.body;
 
