@@ -154,3 +154,21 @@ export const deleteProduct = async (productId) => {
         return { success: false };
     }
 };
+
+export const uploadImage = async (file) => {
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch(`${API_URL}/upload/image`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error('이미지 업로드 오류:', error);
+        return { success: false };
+    }
+};

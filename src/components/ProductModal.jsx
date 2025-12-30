@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { addProduct, updateProduct } from '../utils/auth';
+import toast from 'react-hot-toast';
+import { addProduct, updateProduct, uploadImage } from '../utils/auth';
 import './ProductModal.css';
 
 export default function ProductModal({ product, onClose, onSave }) {
@@ -9,9 +10,12 @@ export default function ProductModal({ product, onClose, onSave }) {
         price: '',
         stock: '',
         status: '판매중',
-        description: ''
+        description: '',
+        imageUrl: ''
     });
     const [saving, setSaving] = useState(false);
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState('');
 
     useEffect(() => {
         if (product) {
@@ -21,8 +25,12 @@ export default function ProductModal({ product, onClose, onSave }) {
                 price: product.price || '',
                 stock: product.stock || '',
                 status: product.status || '판매중',
-                description: product.description || ''
+                description: product.description || '',
+                imageUrl: product.imageUrl || ''
             });
+            if (product.imageUrl) {
+                setImagePreview(product.imageUrl);
+            }
         }
     }, [product]);
 
@@ -34,6 +42,32 @@ export default function ProductModal({ product, onClose, onSave }) {
         }));
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // 파일 크기 체크 (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error('이미지 크기는 5MB 이하여야 합니다');
+                return;
+            }
+
+            // 파일 타입 체크
+            if (!file.type.startsWith('image/')) {
+                toast.error('이미지 파일만 업로드 가능합니다');
+                return;
+            }
+
+            setImageFile(file);
+
+            // 미리보기 생성
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -41,23 +75,50 @@ export default function ProductModal({ product, onClose, onSave }) {
         setSaving(true);
 
         try {
+            let imageUrl = formData.imageUrl;
+
+            // 새 이미지가 선택된 경우 업로드
+            if (imageFile) {
+                const uploadToast = toast.loading('이미지 업로드 중...');
+                const uploadResult = await uploadImage(imageFile);
+
+                if (uploadResult.success) {
+                    imageUrl = uploadResult.url;
+                    toast.success('이미지 업로드 완료', { id: uploadToast });
+                } else {
+                    toast.error('이미지 업로드 실패', { id: uploadToast });
+                    setSaving(false);
+                    return;
+                }
+            }
+
+            // 상품 데이터에 이미지 URL 포함
+            const productData = {
+                ...formData,
+                imageUrl
+            };
+
             let result;
             if (product) {
-                // 수정
-                result = await updateProduct(product.id, formData);
+                result = await updateProduct(product.id, productData);
+                if (result.success) {
+                    toast.success('상품이 수정되었습니다');
+                }
             } else {
-                // 추가
-                result = await addProduct(formData);
+                result = await addProduct(productData);
+                if (result.success) {
+                    toast.success('상품이 추가되었습니다');
+                }
             }
 
             if (result.success) {
                 await onSave();
                 onClose();
             } else {
-                alert(result.message || '저장에 실패했습니다.');
+                toast.error(result.message || '저장에 실패했습니다');
             }
         } catch (error) {
-            alert('오류가 발생했습니다.');
+            toast.error('오류가 발생했습니다');
         } finally {
             setSaving(false);
         }
@@ -72,6 +133,30 @@ export default function ProductModal({ product, onClose, onSave }) {
                 </div>
 
                 <form onSubmit={handleSubmit} className="modal-form">
+                    {/* 이미지 업로드 */}
+                    <div className="form-group">
+                        <label htmlFor="image">상품 이미지</label>
+                        <div className="image-upload-container">
+                            {imagePreview && (
+                                <div className="image-preview">
+                                    <img src={imagePreview} alt="미리보기" />
+                                </div>
+                            )}
+                            <input
+                                type="file"
+                                id="image"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                disabled={saving}
+                                className="file-input"
+                            />
+                            <label htmlFor="image" className="file-label">
+                                {imagePreview ? '이미지 변경' : '이미지 선택'}
+                            </label>
+                            <p className="file-hint">JPG, PNG, GIF, WEBP (최대 5MB)</p>
+                        </div>
+                    </div>
+
                     <div className="form-group">
                         <label htmlFor="name">상품명 *</label>
                         <input
