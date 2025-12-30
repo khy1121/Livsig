@@ -1,0 +1,20 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
+
+function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/login" element={<Login />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/admin" element={<AdminDashboard />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
+}
+
+export default App;

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SIGNAL LIVING - 럭셔리 리빙 액세서리 쇼핑몰, 시그널에서 홈 스타일링을 시작하세요">
+    <meta name="keywords" content="잠옷, 슬리퍼, 앞치마, 침구류, 리빙, 홈스타일링, 감성 인테리어">
+    <title>SIGNAL LIVING - 럭셔리 리빙 액세서리</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>SIGNAL26</h1>
+                </div>
+
+                <nav class="nav" id="mainNav">
+                    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <ul class="nav-list">
+                        <li><a href="#" data-nav="new" class="nav-link">New</a></li>
+                        <li><a href="#" data-nav="best" class="nav-link active">Best</a></li>
+                        <li><a href="#" data-nav="sale" class="nav-link">Sale</a></li>
+                        <li><a href="#" data-nav="collection" class="nav-link">Collection</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="search" placeholder="Search" aria-label="Search products">
+                        <button type="submit" aria-label="Search">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="icon-btn" aria-label="User account">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </button>
+                    <button class="icon-btn" aria-label="Shopping cart">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-image">
+            <img src="hero_banner.png" alt="Luxury Living Lifestyle">
+        </div>
+        <div class="hero-content">
+            <h2 class="hero-title">럭셔리 리빙 액세서리 쇼핑몰</h2>
+            <p class="hero-subtitle">시그널에서 홈 스타일링을 시작하세요</p>
+            <a href="#products" class="btn-primary">컬렉션 보기</a>
+        </div>
+    </section>
+
+
+    <!-- Filter Bar -->
+    <section class=\"filter-bar\">
+        <div class=\"container\">
+            <div class=\"filter-content\">
+                <div class=\"filter-categories\">
+                    <button class=\"filter-chip active\" data-filter=\"all\">All</button>
+                    <button class=\"filter-chip\" data-filter=\"pajamas\">Pajamas</button>
+                    <button class=\"filter-chip\" data-filter=\"slippers\">Slippers</button>
+                    <button class=\"filter-chip\" data-filter=\"aprons\">Aprons</button>
+                    <button class=\"filter-chip\" data-filter=\"bedding\">Bedding</button>
+                    <button class=\"filter-chip\" data-filter=\"accessories\">Accessories</button>
+                </div>
+                <div class=\"filter-options\">
+                    <label class=\"filter-checkbox\">
+                        <input type=\"checkbox\" id=\"filterNew\">
+                        <span>New items only</span>
+                    </label>
+                    <label class=\"filter-checkbox\">
+                        <input type=\"checkbox\" id=\"filterSale\">
+                        <span>Sale items only</span>
+                    </label>
+                    <select class=\"filter-sort\" id=\"filterSort\">
+                        <option value=\"newest\">Newest</option>
+                        <option value=\"price-low\">Price: Low to High</option>
+                        <option value=\"price-high\">Price: High to Low</option>
+                        <option value=\"popular\">Most Popular</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Section -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">카테고리</h2>
+            <div class="category-grid">
+                <div class="category-card" data-category="pajamas">
+                    <div class="category-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+                        </svg>
+                    </div>
+                    <h3>잠옷</h3>
+                    <p>Winter Pajamas</p>
+                </div>
+
+                <div class="category-card" data-category="slippers">
+                    <div class="category-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <ellipse cx="12" cy="18" rx="10" ry="4" />
+                            <path d="M12 14c5.52 0 10-1.79 10-4s-4.48-4-10-4-10 1.79-10 4 4.48 4 10 4z" />
+                        </svg>
+                    </div>
+                    <h3>슬리퍼</h3>
+                    <p>Comfort Slippers</p>
+                </div>
+
+                <div class="category-card" data-category="aprons">
+                    <div class="category-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M12 2v20M6 6h12v12H6z" />
+                            <path d="M9 2h6M6 6l-2 2v10l2 2M18 6l2 2v10l-2 2" />
+                        </svg>
+                    </div>
+                    <h3>앞치마</h3>
+                    <p>French Aprons</p>
+                </div>
+
+                <div class="category-card" data-category="bedding">
+                    <div class="category-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="2" y="7" width="20" height="14" rx="2" />
+                            <path d="M2 11h20M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" />
+                        </svg>
+                    </div>
+                    <h3>침구류</h3>
+                    <p>Bedding Sets</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">신상품</h2>
+                <p class="section-subtitle">New Arrivals</p>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <!-- Product 1 -->
+                <article class="product-card" data-category="pajamas" data-new="true" data-sale="true"
+                    data-price="42500" data-popularity="95">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/400x500/F5F1ED/A8B5A0?text=Toile+Pajamas"
+                            alt="뜨왈 드 주이 겨울 잠옷 세트" loading="lazy">
+                        <span class="badge badge-new">NEW</span>
+                        <span class="badge badge-discount">15%</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category-label">PAJAMAS</div>
+                        <h3 class="product-name">뜨왈 드 주이 겨울 잠옷 세트</h3>
+                        <p class="product-desc">Toile de Jouy Winter Pajamas</p>
+                        <div class="product-price">
+                            <span class="price-current">42,500원</span>
+                            <span class="price-original">50,000원</span>
+                        </div>
+                        <div class="product-tags">
+                            <span class="tag">#겨울잠옷세트</span>
+                            <span class="tag">#뜨왈패턴</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product 2 -->
+                <article class="product-card" data-category="slippers" data-new="false" data-sale="false"
+                    data-price="28000" data-popularity="98">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/400x500/F5F1ED/D4B5B0?text=Cushion+Slippers"
+                            alt="3단 쿠션 겨울 슬리퍼" loading="lazy">
+                        <span class="badge badge-best">BEST</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category-label">SLIPPERS</div>
+                        <h3 class="product-name">3단 쿠션 겨울 슬리퍼</h3>
+                        <p class="product-desc">3-Layer Cushion Winter Slippers</p>
+                        <div class="product-price">
+                            <span class="price-current">28,000원</span>
+                        </div>
+                        <div class="product-tags">
+                            <span class="tag">#쿠션슬리퍼</span>
+                            <span class="tag">#층간소음방지</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product 3 -->
+                <article class="product-card" data-category="aprons" data-new="true" data-sale="false"
+                    data-price="35000" data-popularity="85">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/400x500/F5F1ED/A8B5A0?text=French+Apron" alt="프렌치 자수 앞치마"
+                            loading="lazy">
+                        <span class="badge badge-new">NEW</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category-label">APRONS</div>
+                        <h3 class="product-name">프렌치 자수 감성 앞치마</h3>
+                        <p class="product-desc">Vintage French Embroidery Apron</p>
+                        <div class="product-price">
+                            <span class="price-current">35,000원</span>
+                        </div>
+                        <div class="product-tags">
+                            <span class="tag">#프렌치앞치마</span>
+                            <span class="tag">#빈티지자수</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product 4 -->
+                <article class="product-card" data-category="bedding" data-new="false" data-sale="false"
+                    data-price="89000" data-popularity="80">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/400x500/F5F1ED/D4B5B0?text=Seersucker+Bedding"
+                            alt="시어서커 여름 침구 세트" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category-label">BEDDING</div>
+                        <h3 class="product-name">시어서커 여름 침구 세트</h3>
+                        <p class="product-desc">Seersucker Summer Bedding Set</p>
+                        <div class="product-price">
+                            <span class="price-current">89,000원</span>
+                        </div>
+                        <div class="product-tags">
+                            <span class="tag">#시어서커</span>
+                            <span class="tag">#여름침구</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product 5 -->
+                <article class="product-card" data-category="pajamas" data-new="false" data-sale="true"
+                    data-price="40000" data-popularity="88">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/400x500/F5F1ED/A8B5A0?text=Bear+Pajamas" alt="곰돌이 겨울 잠옷"
+                            loading="lazy">
+                        <span class="badge badge-discount">20%</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category-label">PAJAMAS</div>
+                        <h3 class="product-name">곰돌이 패턴 겨울 잠옷</h3>
+                        <p class="product-desc">Bear Pattern Winter Pajamas</p>
+                        <div class="product-price">
+                            <span class="price-current">40,000원</span>
+                            <span class="price-original">50,000원</span>
+                        </div>
+                        <div class="product-tags">
+                            <span class="tag">#곰돌이패턴</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product 6 -->
+                <article class="product-card" data-category="slippers">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/400x500/F5F1ED/D4B5B0?text=Linen+Slippers" alt="린넨 여름 슬리퍼"
+                            loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">린넨 라탄 여름 슬리퍼</h3>
+                        <p class="product-desc">Linen Rattan Summer Slippers</p>
+                        <div class="product-price">
+                            <span class="price-current">24,000원</span>
+                        </div>
+                        <div class="product-tags">
+                            <span class="tag">#린넨슬리퍼</span>
+                            <span class="tag">#여름슬리퍼</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product 7 -->
+                <article class="product-card" data-category="aprons" data-new="false" data-sale="false"
+                    data-price="38000" data-popularity="92">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/400x500/F5F1ED/A8B5A0?text=Toile+Apron" alt="뜨왈 프릴 앞치마"
+                            loading="lazy">
+                        <span class="badge badge-best">BEST</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category-label">APRONS</div>
+                        <h3 class="product-name">국내제작 뜨왈 프릴 앞치마</h3>
+                        <p class="product-desc">Domestic Toile de Jouy Frill Apron</p>
+                        <div class="product-price">
+                            <span class="price-current">38,000원</span>
+                        </div>
+                        <div class="product-tags">
+                            <span class="tag">#뜨왈앞치마</span>
+                            <span class="tag">#국내제작</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product 8 -->
+                <article class="product-card sold-out" data-category="bedding" data-new="false" data-sale="false"
+                    data-price="32000" data-popularity="70">
+                    <div class="product-image">
+                        <img src="https://via.placeholder.com/400x500/F5F1ED/D4B5B0?text=Buckwheat+Pillow" alt="메밀베개"
+                            loading="lazy">
+                        <div class="sold-out-overlay">품절</div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category-label">BEDDING</div>
+                        <h3 class="product-name">뜨왈 패턴 메밀베개</h3>
+                        <p class="product-desc">Toile de Jouy Buckwheat Pillow</p>
+                        <div class="product-price">
+                            <span class="price-current">32,000원</span>
+                        </div>
+                        <div class="product-tags">
+                            <span class="tag">#메밀베개</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-logo">SIGNAL LIVING</h3>
+                    <p class="footer-desc">럭셔리 리빙 액세서리 쇼핑몰<br>감성적인 홈 스타일링을 제안합니다</p>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/signal_diffuser" target="_blank" rel="noopener"
+                            aria-label="Instagram">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                                <circle cx="12" cy="12" r="4" fill="none" stroke="#F5F1ED" stroke-width="2" />
+                                <circle cx="17.5" cy="6.5" r="1.5" fill="#F5F1ED" />
+                            </svg>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener" aria-label="Blog">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>고객센터</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">공지사항</a></li>
+                        <li><a href="#">자주 묻는 질문</a></li>
+                        <li><a href="#">1:1 문의</a></li>
+                        <li><a href="#">리뷰 이벤트</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>쇼핑 정보</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">배송 안내</a></li>
+                        <li><a href="#">교환 및 반품</a></li>
+                        <li><a href="#">이용약관</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>뉴스레터</h4>
+                    <p class="newsletter-desc">신상품 및 특별 할인 소식을 받아보세요</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="이메일 주소" aria-label="Email address">
+                        <button type="submit">구독</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="business-info">
+                    <p><strong>상호:</strong> SIGNAL LIVING | <strong>대표:</strong> 홍길동</p>
+                    <p><strong>사업자등록번호:</strong> 123-45-67890 | <strong>통신판매업신고:</strong> 2024-서울강남-12345</p>
+                    <p><strong>주소:</strong> 서울특별시 강남구 테헤란로 123</p>
+                    <p><strong>이메일:</strong> contact@signalliving.com | <strong>전화:</strong> 02-1234-5678</p>
+                </div>
+                <p class="copyright">© 2024 SIGNAL LIVING. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

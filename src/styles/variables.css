@@ -1,0 +1,32 @@
+/* CSS Custom Properties */
+:root {
+    /* Figma Design Colors */
+    --color-bg: #FFFFFF;
+    --color-text-primary: #000000;
+    --color-text-secondary: #666666;
+    --color-text-light: #999999;
+    --color-border: #E0E0E0;
+    --color-accent-discount: #FF6B6B;
+    --color-accent-new: #4CAF50;
+    --color-accent-best: #FFA726;
+
+    /* Neutral Grays */
+    --color-gray-50: #F9F9F9;
+    --color-gray-100: #F0F0F0;
+    --color-gray-200: #E0E0E0;
+
+    /* Typography */
+    --font-primary: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Spacing (8px base) */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+    --space-6: 48px;
+    --space-8: 64px;
+
+    /* Layout */
+    --container-width: 1280px;
+    --header-height: 70px;
+}

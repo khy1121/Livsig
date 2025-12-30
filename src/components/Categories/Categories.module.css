@@ -1,0 +1,17 @@
+.categories {
+    padding: var(--space-8) 0;
+    background-color: var(--color-gray-50);
+}
+
+.categoryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-3);
+}
+
+@media (max-width: 768px) {
+    .categoryGrid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-2);
+    }
+}

@@ -1,0 +1,159 @@
+.header {
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: var(--header-height);
+}
+
+.headerContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    gap: var(--space-4);
+}
+
+.logo h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--color-text-primary);
+}
+
+.nav {
+    flex: 1;
+}
+
+.navList {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+    justify-content: center;
+}
+
+.navLink {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    padding: var(--space-1) var(--space-2);
+    position: relative;
+}
+
+.navLink:hover,
+.navLink.active {
+    color: var(--color-text-primary);
+}
+
+.navLink.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-text-primary);
+}
+
+.navToggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: var(--space-1);
+}
+
+.navToggle span {
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    transition: all 0.3s;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.searchBox {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-gray-100);
+    border-radius: 4px;
+    padding: var(--space-1) var(--space-2);
+}
+
+.searchBox input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    width: 200px;
+    color: var(--color-text-primary);
+}
+
+.searchBox input::placeholder {
+    color: var(--color-text-light);
+}
+
+.searchBox button {
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+}
+
+.iconBtn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--color-text-secondary);
+}
+
+.iconBtn:hover {
+    background: var(--color-gray-100);
+}
+
+@media (max-width: 768px) {
+    .headerContent {
+        flex-wrap: wrap;
+    }
+
+    .nav {
+        order: 3;
+        width: 100%;
+    }
+
+    .navToggle {
+        display: flex;
+    }
+
+    .navList {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        padding: var(--space-2) 0;
+        gap: var(--space-1);
+    }
+
+    .navList.active {
+        display: flex;
+    }
+
+    .searchBox input {
+        width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 18px;
+    }
+
+    .searchBox {
+        display: none;
+    }
+}
