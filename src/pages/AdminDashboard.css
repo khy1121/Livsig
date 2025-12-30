@@ -3,6 +3,37 @@
     background-color: #F8F9FA;
 }
 
+.info-card {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    margin-top: 24px;
+}
+
+.info-card p {
+    font-size: 16px;
+    color: #6C757D;
+    margin: 8px 0;
+}
+
+.btn-primary {
+    background-color: #A8B5A0;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #8FA087;
+    transform: translateY(-2px);
+}
+
 .admin-header {
     background: white;
     padding: 20px 32px;

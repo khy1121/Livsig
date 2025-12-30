@@ -499,33 +499,23 @@ export default function AdminDashboard() {
                         <div className="users-view">
                             <div className="view-header">
                                 <h2>사용자 관리</h2>
-                                <button className="add-btn">+ 관리자 추가</button>
+                                <button
+                                    className="add-btn"
+                                    onClick={() => navigate('/admin/users')}
+                                >
+                                    사용자 관리 페이지로 이동 →
+                                </button>
                             </div>
-                            <div className="table-container">
-                                <table className="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>아이디</th>
-                                            <th>이름</th>
-                                            <th>권한</th>
-                                            <th>마지막 로그인</th>
-                                            <th>상태</th>
-                                            <th>작업</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>admin</td>
-                                            <td>관리자</td>
-                                            <td><span className="badge-super">슈퍼관리자</span></td>
-                                            <td>2024-12-30 23:00</td>
-                                            <td><span className="status-badge status-판매중">활성</span></td>
-                                            <td>
-                                                <button className="action-btn" disabled>수정</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div className="info-card">
+                                <p>사용자 관리 기능은 별도 페이지에서 제공됩니다.</p>
+                                <p>관리자 계정 추가, 수정, 삭제 및 활동 로그를 확인할 수 있습니다.</p>
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => navigate('/admin/users')}
+                                    style={{ marginTop: '20px' }}
+                                >
+                                    사용자 관리 페이지 열기
+                                </button>
                             </div>
                         </div>
                     )}
