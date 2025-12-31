@@ -10,6 +10,9 @@ export default function ProductDetail() {
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+
     useEffect(() => {
         loadProduct();
     }, [id]);
@@ -18,13 +21,13 @@ export default function ProductDetail() {
         try {
             setLoading(true);
             // Fetch product details
-            const response = await fetch(`http://localhost:3001/api/products/${id}`);
+            const response = await fetch(`${API_URL}/products/${id}`);
             const data = await response.json();
             setProduct(data);
 
             // Fetch related products from same category
             if (data.category) {
-                const relatedResponse = await fetch(`http://localhost:3001/api/products?category=${data.category}`);
+                const relatedResponse = await fetch(`${API_URL}/products?category=${data.category}`);
                 const relatedData = await relatedResponse.json();
                 // Filter out current product and limit to 4
                 const filtered = relatedData.filter(p => p.id !== id).slice(0, 4);
@@ -55,7 +58,7 @@ export default function ProductDetail() {
     }
 
     const imageUrl = product.imageUrl
-        ? `http://localhost:3001${product.imageUrl}`
+        ? `${SERVER_URL}${product.imageUrl}`
         : '/images/placeholder.jpg';
 
     return (
@@ -126,7 +129,7 @@ export default function ProductDetail() {
                                 >
                                     <div className="related-product-image">
                                         <img
-                                            src={relProd.imageUrl ? `http://localhost:3001${relProd.imageUrl}` : '/images/placeholder.jpg'}
+                                            src={relProd.imageUrl ? `${SERVER_URL}${relProd.imageUrl}` : '/images/placeholder.jpg'}
                                             alt={relProd.name}
                                             loading="lazy"
                                         />

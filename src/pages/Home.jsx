@@ -7,6 +7,8 @@ export default function Home() {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [activeCategory, setActiveCategory] = useState('all');
 
+    const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+
     useEffect(() => {
         loadProducts();
     }, []);
@@ -94,7 +96,7 @@ export default function Home() {
                     <div className="product-grid" id="productGrid">
                         {filteredProducts.map((product, index) => {
                             const imageUrl = product.imageUrl
-                                ? `http://localhost:3001${product.imageUrl}`
+                                ? `${SERVER_URL}${product.imageUrl}`
                                 : `/images/KakaoTalk_20251231_131924311_${String(index % 20).padStart(2, '0')}.jpg`;
 
                             return (
