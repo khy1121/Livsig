@@ -16,6 +16,7 @@ export default function ProductModal({ product, onClose, onSave }) {
     const [saving, setSaving] = useState(false);
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState('');
+    const [activeTab, setActiveTab] = useState('edit'); // 'edit' or 'preview'
 
     useEffect(() => {
         if (product) {
@@ -132,133 +133,192 @@ export default function ProductModal({ product, onClose, onSave }) {
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="modal-form">
-                    {/* 이미지 업로드 */}
-                    <div className="form-group">
-                        <label htmlFor="image">상품 이미지</label>
-                        <div className="image-upload-container">
-                            {imagePreview && (
-                                <div className="image-preview">
-                                    <img src={imagePreview} alt="미리보기" />
+                {/* Tab Navigation */}
+                <div className="modal-tabs">
+                    <button
+                        className={`tab-btn ${activeTab === 'edit' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('edit')}
+                        type="button"
+                    >
+                        ✏️ 편집
+                    </button>
+                    <button
+                        className={`tab-btn ${activeTab === 'preview' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('preview')}
+                        type="button"
+                    >
+                        👁️ 미리보기
+                    </button>
+                </div>
+
+                {/* Edit Tab */}
+                {activeTab === 'edit' && (
+                    <form onSubmit={handleSubmit} className="modal-form">
+                        {/* 이미지 업로드 */}
+                        <div className="form-group">
+                            <label htmlFor="image">상품 이미지</label>
+                            <div className="image-upload-container">
+                                {imagePreview && (
+                                    <div className="image-preview">
+                                        <img src={imagePreview} alt="미리보기" />
+                                    </div>
+                                )}
+                                <input
+                                    type="file"
+                                    id="image"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    disabled={saving}
+                                    className="file-input"
+                                />
+                                <label htmlFor="image" className="file-label">
+                                    {imagePreview ? '이미지 변경' : '이미지 선택'}
+                                </label>
+                                <p className="file-hint">JPG, PNG, GIF, WEBP (최대 5MB)</p>
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="name">상품명 *</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                                placeholder="상품명을 입력하세요"
+                                disabled={saving}
+                            />
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="category">카테고리 *</label>
+                                <select
+                                    id="category"
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleChange}
+                                    required
+                                    disabled={saving}
+                                >
+                                    <option value="pajamas">파자마</option>
+                                    <option value="slippers">슬리퍼</option>
+                                    <option value="aprons">앞치마</option>
+                                    <option value="bedding">침구</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="status">상태 *</label>
+                                <select
+                                    id="status"
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleChange}
+                                    required
+                                    disabled={saving}
+                                >
+                                    <option value="판매중">판매중</option>
+                                    <option value="품절">품절</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label htmlFor="price">가격 (원) *</label>
+                                <input
+                                    type="number"
+                                    id="price"
+                                    name="price"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    required
+                                    min="0"
+                                    placeholder="0"
+                                    disabled={saving}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="stock">재고 *</label>
+                                <input
+                                    type="number"
+                                    id="stock"
+                                    name="stock"
+                                    value={formData.stock}
+                                    onChange={handleChange}
+                                    required
+                                    min="0"
+                                    placeholder="0"
+                                    disabled={saving}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="description">상품 설명</label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                rows="4"
+                                placeholder="상품 설명을 입력하세요"
+                                disabled={saving}
+                            />
+                        </div>
+
+                        <div className="modal-actions">
+                            <button type="button" className="btn-cancel" onClick={onClose} disabled={saving}>
+                                취소
+                            </button>
+                            <button type="submit" className="btn-submit" disabled={saving}>
+                                {saving ? '저장 중...' : (product ? '수정' : '추가')}
+                            </button>
+                        </div>
+                    </form>
+                )}
+
+                {/* Preview Tab */}
+                {activeTab === 'preview' && (
+                    <div className="modal-preview">
+                        <div className="preview-product-card">
+                            <div className="preview-image">
+                                {imagePreview ? (
+                                    <img src={imagePreview} alt={formData.name || '미리보기'} />
+                                ) : (
+                                    <div className="preview-placeholder">이미지 없음</div>
+                                )}
+                                {formData.status === '판매중' && <span className="preview-badge">NEW</span>}
+                            </div>
+                            <div className="preview-info">
+                                <div className="preview-category">{formData.category?.toUpperCase() || 'CATEGORY'}</div>
+                                <h3 className="preview-name">{formData.name || '상품명'}</h3>
+                                <p className="preview-desc">{formData.description || '상품 설명이 없습니다'}</p>
+                                <div className="preview-price">
+                                    <span className="preview-price-current">
+                                        {formData.price ? `${new Intl.NumberFormat('ko-KR').format(formData.price)}원` : '0원'}
+                                    </span>
                                 </div>
-                            )}
-                            <input
-                                type="file"
-                                id="image"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                disabled={saving}
-                                className="file-input"
-                            />
-                            <label htmlFor="image" className="file-label">
-                                {imagePreview ? '이미지 변경' : '이미지 선택'}
-                            </label>
-                            <p className="file-hint">JPG, PNG, GIF, WEBP (최대 5MB)</p>
+                                <div className="preview-stock">
+                                    재고: {formData.stock || 0}개 | 상태: {formData.status || '판매중'}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="name">상품명 *</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                            placeholder="상품명을 입력하세요"
-                            disabled={saving}
-                        />
-                    </div>
-
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="category">카테고리 *</label>
-                            <select
-                                id="category"
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                required
-                                disabled={saving}
+                        <div className="preview-actions">
+                            <button
+                                type="button"
+                                className="btn-back-to-edit"
+                                onClick={() => setActiveTab('edit')}
                             >
-                                <option value="pajamas">파자마</option>
-                                <option value="slippers">슬리퍼</option>
-                                <option value="aprons">앞치마</option>
-                                <option value="bedding">침구</option>
-                            </select>
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="status">상태 *</label>
-                            <select
-                                id="status"
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                required
-                                disabled={saving}
-                            >
-                                <option value="판매중">판매중</option>
-                                <option value="품절">품절</option>
-                            </select>
+                                편집으로 돌아가기
+                            </button>
                         </div>
                     </div>
-
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="price">가격 (원) *</label>
-                            <input
-                                type="number"
-                                id="price"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                required
-                                min="0"
-                                placeholder="0"
-                                disabled={saving}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="stock">재고 *</label>
-                            <input
-                                type="number"
-                                id="stock"
-                                name="stock"
-                                value={formData.stock}
-                                onChange={handleChange}
-                                required
-                                min="0"
-                                placeholder="0"
-                                disabled={saving}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="description">상품 설명</label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            rows="4"
-                            placeholder="상품 설명을 입력하세요"
-                            disabled={saving}
-                        />
-                    </div>
-
-                    <div className="modal-actions">
-                        <button type="button" className="btn-cancel" onClick={onClose} disabled={saving}>
-                            취소
-                        </button>
-                        <button type="submit" className="btn-submit" disabled={saving}>
-                            {saving ? '저장 중...' : (product ? '수정' : '추가')}
-                        </button>
-                    </div>
-                </form>
+                )}
             </div>
         </div>
     );

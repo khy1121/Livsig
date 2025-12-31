@@ -82,7 +82,7 @@ export default function AdminDashboard() {
     const handleLogout = async () => {
         await logout();
         toast.success('로그아웃되었습니다');
-        navigate('/login');
+        navigate('/admin/login');
     };
 
     const formatCurrency = (amount) => {

@@ -53,6 +53,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// 정적 파일 제공 (업로드된 이미지)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // 세션 설정
 app.use(session({
     secret: process.env.SESSION_SECRET || 'sigliv-secret-key',
@@ -65,8 +68,6 @@ app.use(session({
     }
 }));
 
-// 정적 파일 제공 (업로드된 이미지)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 라우트 등록
 app.use('/api/auth', loginLimiter, authRoutes); // Rate limiter 적용
