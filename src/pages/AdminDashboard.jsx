@@ -199,9 +199,14 @@ export default function AdminDashboard() {
                     <h1>SIGNAL LIVING</h1>
                     <span className="header-subtitle">관리자 페이지</span>
                 </div>
-                <button onClick={handleLogout} className="logout-button">
-                    로그아웃
-                </button>
+                <div className="header-actions">
+                    <button onClick={() => navigate('/')} className="home-button">
+                        🏠 홈으로
+                    </button>
+                    <button onClick={handleLogout} className="logout-button">
+                        로그아웃
+                    </button>
+                </div>
             </header>
 
             <div className="admin-content">

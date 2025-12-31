@@ -43,29 +43,100 @@ export default function ProductModal({ product, onClose, onSave }) {
         }));
     };
 
-    const handleImageChange = (e) => {
+    // 이미지 압축 함수
+    const compressImage = (file, maxSizeMB = 2) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    // 최대 크기 제한 (긴 쪽이 2000px)
+                    const maxDimension = 2000;
+                    if (width > height && width > maxDimension) {
+                        height = (height * maxDimension) / width;
+                        width = maxDimension;
+                    } else if (height > maxDimension) {
+                        width = (width * maxDimension) / height;
+                        height = maxDimension;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // 품질 조정하여 압축
+                    let quality = 0.9;
+                    canvas.toBlob(
+                        (blob) => {
+                            if (blob) {
+                                // Blob을 File 객체로 변환
+                                const compressedFile = new File([blob], file.name, {
+                                    type: 'image/jpeg',
+                                    lastModified: Date.now(),
+                                });
+                                resolve(compressedFile);
+                            } else {
+                                reject(new Error('압축 실패'));
+                            }
+                        },
+                        'image/jpeg',
+                        quality
+                    );
+                };
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
+        });
+    };
+
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-            // 파일 크기 체크 (5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                toast.error('이미지 크기는 5MB 이하여야 합니다');
-                return;
-            }
-
             // 파일 타입 체크
             if (!file.type.startsWith('image/')) {
                 toast.error('이미지 파일만 업로드 가능합니다');
                 return;
             }
 
-            setImageFile(file);
+            let processedFile = file;
+
+            // 파일 크기가 2MB보다 크면 자동 압축
+            if (file.size > 2 * 1024 * 1024) {
+                const loadingToast = toast.loading('이미지 최적화 중...');
+                try {
+                    processedFile = await compressImage(file);
+                    toast.success(
+                        `이미지가 최적화되었습니다 (${(file.size / 1024 / 1024).toFixed(1)}MB → ${(processedFile.size / 1024 / 1024).toFixed(1)}MB)`,
+                        { id: loadingToast }
+                    );
+                } catch (error) {
+                    toast.error('이미지 최적화 실패', { id: loadingToast });
+                    return;
+                }
+            }
+
+            // 최종 크기 체크 (10MB)
+            if (processedFile.size > 10 * 1024 * 1024) {
+                toast.error('이미지 크기는 10MB 이하여야 합니다');
+                return;
+            }
+
+            setImageFile(processedFile);
 
             // 미리보기 생성
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(processedFile);
         }
     };
 
@@ -174,7 +245,7 @@ export default function ProductModal({ product, onClose, onSave }) {
                                 <label htmlFor="image" className="file-label">
                                     {imagePreview ? '이미지 변경' : '이미지 선택'}
                                 </label>
-                                <p className="file-hint">JPG, PNG, GIF, WEBP (최대 5MB)</p>
+                                <p className="file-hint">JPG, PNG, GIF, WEBP (2MB 이상은 자동 압축)</p>
                             </div>
                         </div>
 

@@ -31,8 +31,10 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// 보안 미들웨어 - Helmet
-app.use(helmet());
+// 보안 미들웨어 - Helmet (CORS 이미지 허용 설정)
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // Rate Limiting - 로그인 엔드포인트
 const loginLimiter = rateLimit({
