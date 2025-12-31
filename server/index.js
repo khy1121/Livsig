@@ -58,6 +58,15 @@ app.use(cookieParser());
 // 정적 파일 제공 (업로드된 이미지)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Health check endpoint for Railway
+app.get('/', (req, res) => {
+    res.json({
+        status: 'ok',
+        message: 'Signal Living API Server',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // 세션 설정
 app.use(session({
     secret: process.env.SESSION_SECRET || 'sigliv-secret-key',
